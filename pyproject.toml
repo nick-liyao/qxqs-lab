@@ -1,0 +1,20 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "qxqs-lab"
+version = "0.1.0"
+description = "Local-first low-frequency quant toolkit for QXQS trend lines, tiered signals, low-repair screening, backtests, and Markdown reports."
+readme = "README.md"
+requires-python = ">=3.10"
+license = "MIT"
+authors = [{ name = "QXQS Lab" }]
+keywords = ["quant", "technical-analysis", "backtesting", "trading", "kline", "screener"]
+dependencies = ["matplotlib>=3.8", "pandas>=2.0"]
+
+[project.scripts]
+qxqs = "qxqs.cli:main"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/qxqs"]
