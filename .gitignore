@@ -9,3 +9,7 @@ build/
 .env
 configs/private*.json
 reports/private*/
+outputs/futu-pack/
+outputs/futu-pack.zip
+outputs/launch/
+outputs/launch-*/
