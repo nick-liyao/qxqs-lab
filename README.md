@@ -44,6 +44,8 @@ This is not an official Futu/Moomoo plugin or a one-click installer. It is a cop
 
 See [Futu/Moomoo Indicator Import](docs/futu_moomoo_import.md).
 
+Chinese guide: [富途/牛牛指标导入教程](docs/futu_moomoo_import_zh.md).
+
 ## Mobile Screenshot App
 
 ```bash
