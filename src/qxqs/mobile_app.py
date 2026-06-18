@@ -9,6 +9,7 @@ from .backtest import run_backtest
 from .charts import render_signal_chart
 from .data_sources.csv import load_csv
 from .data_sources.yahoo import fetch_yahoo_daily
+from .explain import social_caption, zh_signal_text
 from .signals import add_qxqs_signals, latest_signal_summary
 
 
@@ -31,12 +32,14 @@ def main() -> None:
         </style>
         """, unsafe_allow_html=True)
     st.title("QXQS Lab")
-    st.caption("Mobile-friendly low-frequency signal chart. Research only, not financial advice.")
-    symbol = st.text_input("Symbol", value="QQQ")
-    range_ = st.selectbox("Yahoo range", ["6mo", "1y", "2y", "5y"], index=2)
-    uploaded = st.file_uploader("Or upload OHLCV CSV", type=["csv"])
-    profile = st.segmented_control("Chart format", ["xhs", "wide"], default="xhs")
-    if st.button("Generate chart", type="primary", use_container_width=True):
+    st.caption("手机端低频信号图。仅用于研究复盘，不构成投资建议。")
+    presets = ["QQQ", "NVDA", "TSLA", "SPY", "MSTR", "AAPL", "MSFT", "GDX", "KWEB"]
+    preset = st.selectbox("热门标的", presets, index=0)
+    symbol = st.text_input("Symbol", value=preset)
+    range_ = st.selectbox("数据区间", ["6mo", "1y", "2y", "5y"], index=2)
+    uploaded = st.file_uploader("或上传 OHLCV CSV", type=["csv"])
+    profile = st.segmented_control("截图格式", ["xhs", "wide"], default="xhs")
+    if st.button("生成信号图", type="primary", use_container_width=True):
         try:
             raw, resolved_symbol = _load_data(symbol, uploaded, range_)
             signals = add_qxqs_signals(raw)
@@ -44,18 +47,22 @@ def main() -> None:
             backtest = run_backtest(raw, symbol=resolved_symbol)
             out = Path("outputs/mobile") / f"{resolved_symbol.lower()}-{profile}.png"
             render_signal_chart(signals, symbol=resolved_symbol, output=out, profile=profile)
+            signal_zh = zh_signal_text(summary["signal"])
+            caption = social_caption(resolved_symbol, summary, backtest)
             st.image(str(out), use_container_width=True)
             c1, c2 = st.columns(2)
-            c1.metric("Latest signal", str(summary["signal"]))
+            c1.metric("最新信号", f"{summary['signal']} / {signal_zh['title']}")
             c2.metric("DKXV", str(summary["DKXV_color"]))
-            c1.metric("Close", str(summary["close"]))
+            c1.metric("收盘价", str(summary["close"]))
             c2.metric("XDDW", f"{summary['FAST2']} / {summary['SLOW2']}")
-            st.markdown(f"**Read:** {summary['signal_reason']}")
-            st.markdown(f"**Backtest:** {backtest.total_return_pct}% strategy vs {backtest.buy_hold_return_pct}% buy-hold, max drawdown {backtest.max_drawdown_pct}%.")
-            st.download_button("Download screenshot", data=out.read_bytes(), file_name=out.name, mime="image/png", use_container_width=True)
-            st.link_button("Open source on GitHub", "https://github.com/nick-liyao/qxqs-lab", use_container_width=True)
+            st.markdown(f"**中文解读：** {signal_zh['explain']}")
+            st.markdown(f"**复盘动作：** {signal_zh['action']}")
+            st.markdown(f"**回测摘要：** 策略 {backtest.total_return_pct}% vs 买入持有 {backtest.buy_hold_return_pct}%，最大回撤 {backtest.max_drawdown_pct}%。")
+            st.text_area("小红书/抖音文案", caption, height=220)
+            st.download_button("下载截图", data=out.read_bytes(), file_name=out.name, mime="image/png", use_container_width=True)
+            st.link_button("GitHub 开源项目", "https://github.com/nick-liyao/qxqs-lab", use_container_width=True)
         except Exception as exc:
-            st.error(f"Could not generate chart: {exc}")
+            st.error(f"生成失败：{exc}")
 
 
 if __name__ == "__main__":
