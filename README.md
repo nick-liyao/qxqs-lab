@@ -26,6 +26,8 @@ qxqs report examples/sample_data/sample_ohlcv.csv --symbol SAMPLE
 qxqs screen --symbols QQQ SPY NVDA GDX KWEB
 qxqs export-futu
 qxqs web
+qxqs launch-pack
+qxqs launch-pack --discover --limit 7
 ```
 
 ## Futu/Moomoo Indicator Pack
@@ -56,6 +58,18 @@ qxqs web
 Open `http://localhost:8501`, enter a symbol, generate a 4:5 chart, and download a social-ready screenshot.
 
 See [Mobile Screenshot App](docs/mobile_screenshot_app.md).
+
+## Social Launch Pack
+
+```bash
+qxqs launch-pack
+```
+
+This creates 4:5 mobile chart images, Chinese captions, and a posting manifest under `outputs/launch`.
+
+Use `--discover` to scan a hot AI, semiconductor, crypto-adjacent, and ETF universe before generating the launch batch.
+
+See [Launch Pack Workflow](docs/launch_pack.md).
 
 ## Signal Labels
 
