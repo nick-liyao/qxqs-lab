@@ -1,6 +1,9 @@
 from __future__ import annotations
 
 import argparse
+import os
+import subprocess
+import sys
 from pathlib import Path
 import math
 from datetime import date, timedelta
@@ -32,6 +35,8 @@ def build_parser() -> argparse.ArgumentParser:
     screen.add_argument("--json", default="outputs/reports/low-repair.json")
     futu = sub.add_parser("export-futu")
     futu.add_argument("--output-dir", default="outputs/futu-pack")
+    web = sub.add_parser("web")
+    web.add_argument("--port", default="8501")
     return p
 
 
@@ -59,8 +64,7 @@ def _load_with_signals(path: str | Path):
 
 def run_demo() -> None:
     sample = Path("examples/sample_data/sample_ohlcv.csv")
-    if not sample.exists():
-        _sample_csv(sample)
+    if not sample.exists(): _sample_csv(sample)
     d = _load_with_signals(sample)
     chart_path = render_signal_chart(d, symbol="SAMPLE", output="outputs/charts/qxqs-demo.svg")
     signal_report = write_signal_report(d, symbol="SAMPLE", output="outputs/reports/latest.md")
@@ -96,5 +100,9 @@ def main() -> None:
         print(s.to_dict()); return
     if args.command == "report": print(write_signal_report(_load_with_signals(args.csv), symbol=args.symbol, output=args.output)); return
     if args.command == "export-futu": print(export_futu_pack(args.output_dir)); return
+    if args.command == "web":
+        env = {**os.environ, "STREAMLIT_BROWSER_GATHER_USAGE_STATS": "false"}
+        subprocess.run([sys.executable, "-m", "streamlit", "run", str(Path(__file__).with_name("mobile_app.py")), "--server.port", str(args.port), "--server.headless", "true"], env=env, check=False)
+        return
 
 if __name__ == "__main__": main()
