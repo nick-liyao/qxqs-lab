@@ -25,6 +25,7 @@ qxqs backtest examples/sample_data/sample_ohlcv.csv --symbol SAMPLE
 qxqs report examples/sample_data/sample_ohlcv.csv --symbol SAMPLE
 qxqs screen --symbols QQQ SPY NVDA GDX KWEB
 qxqs export-futu
+qxqs web
 ```
 
 ## Futu/Moomoo Indicator Pack
@@ -42,6 +43,17 @@ This creates:
 This is not an official Futu/Moomoo plugin or a one-click installer. It is a copy-paste indicator package for manual custom-indicator setup.
 
 See [Futu/Moomoo Indicator Import](docs/futu_moomoo_import.md).
+
+## Mobile Screenshot App
+
+```bash
+pip install -e ".[web]"
+qxqs web
+```
+
+Open `http://localhost:8501`, enter a symbol, generate a 4:5 chart, and download a social-ready screenshot.
+
+See [Mobile Screenshot App](docs/mobile_screenshot_app.md).
 
 ## Signal Labels
 
@@ -65,12 +77,12 @@ Most chart indicators are hard to reproduce, and many trading scripts mix privat
 - next-bar backtest to avoid future leakage;
 - Markdown and JSON reports;
 - Futu/Moomoo-style copy-paste indicator pack;
+- mobile-friendly 4:5 chart screenshots;
 - no private account data;
 - no live trading.
 
 ## Roadmap
 
-- Futu/Moomoo copy-paste indicator pack.
 - Mobile-friendly 4:5 chart screenshots.
 - Better chart themes for Xiaohongshu, Douyin, YouTube Shorts, and X.
 - Watchlist presets.
