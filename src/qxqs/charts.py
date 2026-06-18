@@ -28,8 +28,10 @@ def render_signal_chart(df: pd.DataFrame, *, symbol: str, output: str | Path, pr
         elif label in DOWN_SIGNALS:
             ax.scatter(i, row["high"] * 1.015, marker="v", color="#b7352d", s=90, zorder=5); ax.text(i, row["high"] * 1.025, label, color="#b7352d", fontsize=8, ha="center", va="bottom")
     latest = plot_df.iloc[-1]
-    ax.set_title(f"{symbol} QXQS Lab | {latest['DKXV_color']} DKXV | {latest['signal'] or 'no signal'}", loc="left", fontsize=15, weight="bold")
+    title_size = 16 if profile == "xhs" else 15
+    ax.set_title(f"{symbol} QXQS Lab | {latest['DKXV_color']} DKXV | {latest['signal'] or 'no signal'}", loc="left", fontsize=title_size, weight="bold")
     ax.grid(True, alpha=0.18); ax.legend(loc="upper left", frameon=False); ax.spines[["top", "right"]].set_visible(False)
-    ax.text(0.01, 0.02, "Research only. Not financial advice.", transform=ax.transAxes, fontsize=9, alpha=0.65)
+    footer = "QXQS Lab - github.com/nick-liyao/qxqs-lab | Research only. Not financial advice."
+    ax.text(0.01, 0.02, footer, transform=ax.transAxes, fontsize=8 if profile == "xhs" else 9, alpha=0.68)
     fig.tight_layout(); fig.savefig(output, dpi=160); plt.close(fig)
     return output
